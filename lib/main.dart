@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(home: HomePage()));
+  runApp(const MaterialApp(home: HomePage()));
 }
 
 class HomePage extends StatefulWidget {
@@ -12,199 +12,117 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isRed1 = true;
-  bool isRed2 = true;
-  bool isRed3 = true;
-  bool isRed4 = true;
-  bool isRed5 = true;
-  bool isRed6 = true;
-  bool isRed7 = true;
-  bool isRed8 = true;
-  bool isRed9 = true;
+  List<Color> buttonColors = List.filled(9, Colors.blue);
+  List<String> buttonValues = List.filled(9, '');
+  bool isPlayer1 = true;
+
+  void checkWinner() {
+    List<List<int>> winningConditions = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    for (var condition in winningConditions) {
+      if (buttonValues[condition[0]] != '' &&
+          buttonValues[condition[0]] == buttonValues[condition[1]] &&
+          buttonValues[condition[0]] == buttonValues[condition[2]]) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('${buttonValues[condition[0]]} wins!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  resetGame();
+                },
+                child: const Text('Play Again'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+    }
+
+    // Check for a draw
+    if (!buttonValues.contains('')) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('It\'s a draw!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                resetGame();
+              },
+              child: const Text('Play Again'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void resetGame() {
+    setState(() {
+      buttonColors = List.filled(9, Colors.blue);
+      buttonValues = List.filled(9, '');
+      isPlayer1 = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text('X and O'),
+        title: const Text('Tic Tac Toe'),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
+            GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
+              ),
+              itemCount: 9,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    if (buttonValues[index] == '') {
                       setState(() {
-                        isRed1 = !isRed1;
+                        if (isPlayer1) {
+                          buttonValues[index] = 'Red';
+                          buttonColors[index] = Colors.red;
+                        } else {
+                          buttonValues[index] = 'Green';
+                          buttonColors[index] = Colors.green;
+                        }
+                        isPlayer1 = !isPlayer1;
+                        checkWinner();
                       });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed1 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('1'),
-                    ),
+                    }
+                  },
+                  child: Container(
+                    color: buttonColors[index],
+                    alignment: Alignment.center,
+                    child: const Text(''),
                   ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed2 = !isRed2;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed2 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('2'),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed3 = !isRed3;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed3 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('3'),
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-            const SizedBox(
-              height: 12,
+            ElevatedButton(
+              onPressed: resetGame,
+              child: const Text('Reset Game'),
             ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed4 = !isRed4;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed4 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('1'),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed5 = !isRed5;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed5 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('2'),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed6 = !isRed6;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed6 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('3'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed7 = !isRed7;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed7 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('1'),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed8 = !isRed8;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed8 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('2'),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isRed9 = !isRed9;
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      color: isRed9 ? Colors.red : Colors.blue,
-                      alignment: Alignment.center,
-                      child: const Text('3'),
-                    ),
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),

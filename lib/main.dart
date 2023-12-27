@@ -5,33 +5,38 @@ void main() {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Color> buttonColors = List.filled(9, Colors.blue);
-  List<String> buttonValues = List.filled(9, '');
+  List<Color> buttonColors = List<Color>.filled(9, Colors.blue);
+  List<String> buttonValues = List<String>.filled(9, '');
   bool isPlayer1 = true;
 
   void checkWinner() {
-    List<List<int>> winningConditions = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
+    final List<List<int>> winningConditions = <List<int>>[
+      <int>[0, 1, 2],
+      <int>[3, 4, 5],
+      <int>[6, 7, 8],
+      <int>[0, 3, 6],
+      <int>[1, 4, 7],
+      <int>[2, 5, 8],
+      <int>[0, 4, 8],
+      <int>[2, 4, 6]
     ];
 
-    for (var condition in winningConditions) {
+    for (final List<int> condition in winningConditions) {
       if (buttonValues[condition[0]] != '' &&
           buttonValues[condition[0]] == buttonValues[condition[1]] &&
           buttonValues[condition[0]] == buttonValues[condition[2]]) {
-        showDialog(
+        showDialog<void>(
           context: context,
           builder: (_) => AlertDialog(
             title: Text('${buttonValues[condition[0]]} wins!'),
-            actions: [
+            actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -48,11 +53,11 @@ class _HomePageState extends State<HomePage> {
 
     // Check for a draw
     if (!buttonValues.contains('')) {
-      showDialog(
+      showDialog<void>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('It\'s a draw!'),
-          actions: [
+          title: const Text("It's a draw!"),
+          actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -68,8 +73,8 @@ class _HomePageState extends State<HomePage> {
 
   void resetGame() {
     setState(() {
-      buttonColors = List.filled(9, Colors.blue);
-      buttonValues = List.filled(9, '');
+      buttonColors = List<Color>.filled(9, Colors.blue);
+      buttonValues = List<String>.filled(9, '');
       isPlayer1 = true;
     });
   }
@@ -85,7 +90,7 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          children: [
+          children: <Widget>[
             GridView.builder(
               shrinkWrap: true,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
